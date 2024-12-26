@@ -35,7 +35,30 @@ import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
 import Projects from "layouts/dashboard/components/Projects";
 import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+
 function Dashboard() {
+  const [dashboardData, setDashboardData] = useState({
+    ingresos: 0,
+    gastos: 0,
+    balance: 0,
+    capital: 0,
+  });
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const { data } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/dashboard-data`);
+        setDashboardData(data);
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
   const { sales, tasks } = reportsLineChartData;
 
   return (
@@ -47,13 +70,13 @@ function Dashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="dark"
-                icon="weekend"
-                title="Bookings"
-                count={281}
+                icon="account_balance"
+                title="Capital"
+                count={`$${dashboardData.capital.toLocaleString()}`}
                 percentage={{
                   color: "success",
-                  amount: "+55%",
-                  label: "than lask week",
+                  amount: "",
+                  label: "Saldo total de cuentas",
                 }}
               />
             </MDBox>
@@ -61,13 +84,13 @@ function Dashboard() {
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
-                icon="leaderboard"
-                title="Today's Users"
-                count="2,300"
+                icon="attach_money"
+                title="Ingresos"
+                count={`$${dashboardData.ingresos.toLocaleString()}`}
                 percentage={{
                   color: "success",
-                  amount: "+3%",
-                  label: "than last month",
+                  amount: "",
+                  label: "Ingresos del mes",
                 }}
               />
             </MDBox>
@@ -75,14 +98,14 @@ function Dashboard() {
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
-                color="success"
-                icon="store"
-                title="Revenue"
-                count="34k"
+                color="error"
+                icon="money_off"
+                title="Gastos"
+                count={`$${dashboardData.gastos.toLocaleString()}`}
                 percentage={{
-                  color: "success",
-                  amount: "+1%",
-                  label: "than yesterday",
+                  color: "error",
+                  amount: "",
+                  label: "Gastos del mes",
                 }}
               />
             </MDBox>
@@ -91,13 +114,13 @@ function Dashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="primary"
-                icon="person_add"
-                title="Followers"
-                count="+91"
+                icon="show_chart"
+                title="Balance"
+                count={`$${dashboardData.balance.toLocaleString()}`}
                 percentage={{
-                  color: "success",
+                  color: dashboardData.balance >= 0 ? "success" : "error",
                   amount: "",
-                  label: "Just updated",
+                  label: "Ingresos - Gastos",
                 }}
               />
             </MDBox>
