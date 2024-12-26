@@ -14,9 +14,10 @@
   "plugins": ["react", "prettier"],
   "rules": {
     "prettier/prettier": [
-      "error",
+      "warn",
       {
-        "endOfLine": "auto"
+        "endOfLine": "auto",
+        "singleQuote": false
       }
     ],
     "react/display-name": "off",
