@@ -12,6 +12,7 @@ import Typography from "@mui/material/Typography";
 function FloatingActions() {
   const [openModal, setOpenModal] = useState(false); // Controla si el modal está abierto
   const [modalTitle, setModalTitle] = useState(""); // Guarda el título según la opción seleccionada
+  const [openSpeedDial, setOpenSpeedDial] = useState(false); // Controla si el SpeedDial está abierto
 
   const actions = [
     { icon: <PaidIcon />, name: "Ingreso" },
@@ -38,6 +39,7 @@ function FloatingActions() {
   const handleOpenModal = (actionName) => {
     setModalTitle(actionName); // Configura el título del modal
     setOpenModal(true); // Abre el modal
+    setOpenSpeedDial(false); // Cierra el SpeedDial después de seleccionar
   };
 
   // Manejador para cerrar el modal
@@ -55,15 +57,26 @@ function FloatingActions() {
           bottom: 16,
           right: 16,
           "& .MuiFab-primary": {
-            width: 50, // Aumenta el tamaño del FAB
-            height: 50, // Aumenta el tamaño del FAB
+            width: 70, // Tamaño del FAB
+            height: 70, // Tamaño del FAB
           },
         }}
         icon={<SpeedDialIcon sx={{ fontSize: "1.5rem", display: "flex", alignItems: "center", justifyContent: "center" }} />}
+        onClick={() => setOpenSpeedDial((prev) => !prev)} // Alternar el estado al hacer clic
+        open={openSpeedDial} // Controla si está abierto o cerrado
       >
         {actions.map((action) => (
           <SpeedDialAction
             key={action.name}
+            sx={{
+                "& .MuiSvgIcon-root": {
+                  fontSize: "2rem !important", // Aumenta el tamaño del ícono
+                },
+                "& .MuiSpeedDialAction-fab": {
+                  width: 60, // Aumenta el tamaño del botón
+                  height: 60, // Aumenta el tamaño del botón
+                },
+              }}
             icon={action.icon}
             tooltipTitle={action.name}
             onClick={() => handleOpenModal(action.name)} // Llama al modal con el título correspondiente
