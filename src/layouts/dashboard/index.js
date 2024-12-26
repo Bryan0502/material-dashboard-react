@@ -38,6 +38,9 @@ import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
+import FloatingActions from "layouts/dashboard/components/OrdersOverview/FloatingActions"; // Ajusta la ruta si es necesario
+
+
 function Dashboard() {
   const [dashboardData, setDashboardData] = useState({
     ingresos: 0,
@@ -179,6 +182,7 @@ function Dashboard() {
         </MDBox>
       </MDBox>
       <Footer />
+      <FloatingActions /> {/* Botón flotante con opciones */}
     </DashboardLayout>
   );
 }
