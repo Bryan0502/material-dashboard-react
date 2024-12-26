@@ -8,10 +8,19 @@ import SwapHorizIcon from "@mui/icons-material/SwapHoriz"; // Ícono para "Trans
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
+import NativeSelect from "@mui/material/NativeSelect";
+
+import billeteraIcon from "assets/images/icons/cuentas/billetera.png"; // Ruta del icono
 
 function FloatingActions() {
-  const [openModal, setOpenModal] = useState(false); // Controla si el modal está abierto
+  const [openModal, setOpenModal] = useState(false); // Controla si el modal de Ingreso/Gasto está abierto
+  const [openTransferModal, setOpenTransferModal] = useState(false); // Controla si el modal de Transferencia está abierto
   const [modalTitle, setModalTitle] = useState(""); // Guarda el título según la opción seleccionada
+  const [selectedAccountDesde, setSelectedAccountDesde] = useState("planillin"); // Inicializa con el valor "Cuenta de Ahorros"
+  const [selectedAccountHacia, setSelectedAccountHacia] = useState("ahorrito"); // Inicializa con el valor "Cuenta de Ahorros"
+
   const [openSpeedDial, setOpenSpeedDial] = useState(false); // Controla si el SpeedDial está abierto
 
   const actions = [
@@ -20,7 +29,7 @@ function FloatingActions() {
     { icon: <SwapHorizIcon />, name: "Transferencia" },
   ];
 
-  // Estilo del modal
+  // Estilo de los modales
   const modalStyle = {
     position: "absolute",
     top: "50%",
@@ -33,18 +42,36 @@ function FloatingActions() {
     outline: "none",
     boxShadow: 24,
     textAlign: "center",
+    minWidth: 300,
   };
 
   // Manejador para abrir el modal con el título adecuado
   const handleOpenModal = (actionName) => {
-    setModalTitle(actionName); // Configura el título del modal
-    setOpenModal(true); // Abre el modal
-    setOpenSpeedDial(false); // Cierra el SpeedDial después de seleccionar
+    if (actionName === "Transferencia") {
+      setOpenTransferModal(true); // Abre el modal de Transferencia
+    } else {
+      setModalTitle(actionName); // Configura el título del modal
+      setOpenModal(true); // Abre el modal de Ingreso/Gasto
+    }
   };
 
-  // Manejador para cerrar el modal
+  // Manejadores para cerrar los modales
   const handleCloseModal = () => {
     setOpenModal(false);
+  };
+
+  const handleCloseTransferModal = () => {
+    setOpenTransferModal(false);
+  };
+
+  // Manejador para el select cuenta desde
+  const handleSelectChangeDesde = (event) => {
+    setSelectedAccountDesde(event.target.value); // Actualiza el valor seleccionado
+  };
+
+   // Manejador para el select cuenta hacia
+   const handleSelectChangeHacia = (event) => {
+    setSelectedAccountHacia(event.target.value); // Actualiza el valor seleccionado
   };
 
   return (
@@ -69,14 +96,14 @@ function FloatingActions() {
           <SpeedDialAction
             key={action.name}
             sx={{
-                "& .MuiSvgIcon-root": {
-                  fontSize: "2rem !important", // Aumenta el tamaño del ícono
-                },
-                "& .MuiSpeedDialAction-fab": {
-                  width: 60, // Aumenta el tamaño del botón
-                  height: 60, // Aumenta el tamaño del botón
-                },
-              }}
+              "& .MuiSvgIcon-root": {
+                fontSize: "2rem !important", // Aumenta el tamaño del ícono
+              },
+              "& .MuiSpeedDialAction-fab": {
+                width: 60, // Aumenta el tamaño del botón
+                height: 60, // Aumenta el tamaño del botón
+              },
+            }}
             icon={action.icon}
             tooltipTitle={action.name}
             onClick={() => handleOpenModal(action.name)} // Llama al modal con el título correspondiente
@@ -84,10 +111,135 @@ function FloatingActions() {
         ))}
       </SpeedDial>
 
-      {/* Modal que se muestra al seleccionar una opción */}
+      {/* Modal para Ingreso y Gasto */}
       <Modal open={openModal} onClose={handleCloseModal}>
         <Box sx={modalStyle}>
-          <Typography variant="h5">{modalTitle}</Typography> {/* Título del modal */}
+          <Typography variant="h5" sx={{ mb: 2 }}>
+            {modalTitle}
+          </Typography>
+          {/* Select para elegir cuenta */}
+          <FormControl fullWidth>
+            <InputLabel variant="standard" htmlFor="account-select" sx={{ color: "white" }}>
+              Cuenta
+            </InputLabel>
+            <NativeSelect
+              value={selectedAccountDesde} // Asigna el valor actual del estado
+              inputProps={{
+                name: "account",
+                id: "account-select",
+              }}
+              sx={{
+                color: "white", // Color del texto dentro del select
+                bgcolor: "#2c3557", // Fondo del select
+                borderRadius: 1, // Bordes redondeados
+                "&:before": { borderBottom: "1px solid white !important" },
+                "&:after": { borderBottom: "1px solid white !important" },
+                "& .MuiNativeSelect-icon": { color: "white" }, // Icono del select
+                "& option": { color: "white !important", backgroundColor: "#2c3557 !important" }, // Estilo de las opciones
+                "& .MuiNativeSelect-select": { color: "white !important", backgroundColor: "#2c3557 !important" }, // Estilo de las opciones
+              }}
+              onChange={handleSelectChangeDesde}
+            >
+              <option value="ahorrito" id="ahorrito">
+                Cuenta de Ahorros
+              </option>
+              <option value="planillin" id="planillin">
+                Cuenta de Planilla
+              </option>
+            </NativeSelect>
+          </FormControl>
+        </Box>
+      </Modal>
+
+      {/* Modal para Transferencia */}
+      <Modal open={openTransferModal} onClose={handleCloseTransferModal}>
+        <Box sx={modalStyle}>
+          <Typography variant="h5" sx={{ mb: 2 }}>
+            Transferencia
+          </Typography>
+          {/* Aquí puedes incluir otros elementos específicos para Transferencia */}
+          {/* Select para elegir cuenta desde*/}
+          <FormControl fullWidth sx={{ mb: 2, display: "flex", alignItems: "center" }}>
+        <Box
+          component="img"
+          src={billeteraIcon}
+          alt="Desde"
+          sx={{ width: 24, height: 24, marginRight: 1 }}
+        />
+        <NativeSelect
+          value={selectedAccountDesde}
+          inputProps={{
+            name: "account",
+            id: "account-select",
+          }}
+          sx={{
+            color: "white",
+            bgcolor: "transparent", // Fondo transparente
+            border: "none", // Sin bordes
+            outline: "none", // Sin contorno
+            "& .MuiNativeSelect-icon": { color: "white" },
+            "& option": {
+              color: "white !important",
+              backgroundColor: "transparent !important", // Fondo transparente para las opciones
+              border: "none", // Sin bordes en las opciones
+            },
+            "& .MuiNativeSelect-select": { color: "white !important", backgroundColor: "#2c3557 !important" }, // Estilo de las opciones nuevas
+            "&:hover": {
+              backgroundColor: "transparent", // Sin cambio de fondo al hover
+            },
+          }}
+          onChange={handleSelectChangeDesde}
+        >
+          <option value="ahorrito" id="ahorrito">
+            Cuenta de Ahorros
+          </option>
+          <option value="planillin" id="planillin">
+            Cuenta de Planilla
+          </option>
+        </NativeSelect>
+      </FormControl>
+
+      {/* Select "Hacia" */}
+      <FormControl fullWidth sx={{ display: "flex", alignItems: "center" }}>
+        <Box
+          component="img"
+          src={billeteraIcon}
+          alt="Hacia"
+          sx={{ width: 24, height: 24, marginRight: 1 }}
+        />
+        <NativeSelect
+          value={selectedAccountHacia}
+          inputProps={{
+            name: "accountto",
+            id: "account-selectto",
+          }}
+          sx={{
+            color: "white",
+            bgcolor: "transparent", // Fondo transparente
+            border: "none", // Sin bordes
+            outline: "none", // Sin contorno
+            "& .MuiNativeSelect-icon": { color: "white" },
+            "& option": {
+              color: "white !important",
+              backgroundColor: "transparent !important", // Fondo transparente para las opciones
+              border: "none", // Sin bordes en las opciones
+            },
+            "& .MuiNativeSelect-select": { color: "white !important", backgroundColor: "#2c3557 !important" }, // Estilo de las opciones nuevas
+            "&:hover": {
+              backgroundColor: "transparent", // Sin cambio de fondo al hover
+            },
+          }}
+          onChange={handleSelectChangeHacia}
+        >
+          <option value="ahorrito" id="ahorrito">
+            Cuenta de Ahorros
+          </option>
+          <option value="planillin" id="planillin">
+            Cuenta de Planilla
+          </option>
+        </NativeSelect>
+      </FormControl>
+
         </Box>
       </Modal>
     </>
