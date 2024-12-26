@@ -11,9 +11,16 @@ import Typography from "@mui/material/Typography";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import NativeSelect from "@mui/material/NativeSelect";
+import TextField from "@mui/material/TextField";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import billeteraIcon from "assets/images/icons/cuentas/billetera.png"; // Ruta del icono
 import transferenciaIcon from "assets/images/icons/categorias/transferencia.png"; // Ruta del icono
+import detalleIcon from "assets/images/icons/categorias/detalles.png"; // Ruta del icono
+import fechaIcon from "assets/images/icons/categorias/fecha.png"; // Ruta del icono
 
 function FloatingActions() {
   const [openModal, setOpenModal] = useState(false); // Controla si el modal de Ingreso/Gasto está abierto
@@ -21,6 +28,8 @@ function FloatingActions() {
   const [modalTitle, setModalTitle] = useState(""); // Guarda el título según la opción seleccionada
   const [selectedAccountDesde, setSelectedAccountDesde] = useState("planillin"); // Inicializa con el valor "Cuenta de Ahorros"
   const [selectedAccountHacia, setSelectedAccountHacia] = useState("ahorrito"); // Inicializa con el valor "Cuenta de Ahorros"
+  const [selectedDate, setSelectedDate] = useState(dayjs());
+  const [transferDetail, setTransferDetail] = useState(""); //Inicializa el detalle
 
   const [openSpeedDial, setOpenSpeedDial] = useState(false); // Controla si el SpeedDial está abierto
 
@@ -153,152 +162,217 @@ function FloatingActions() {
       </Modal>
 
       {/* Modal para Transferencia */}
-      <Modal open={openTransferModal} onClose={handleCloseTransferModal}>
+        <Modal open={openTransferModal} onClose={() => setOpenTransferModal(false)}>
         <Box sx={modalStyle}>
-          <Typography variant="h5" sx={{ mb: 2 }}>
+            <Typography variant="h5" sx={{ mb: 2 }}>
             Transferencia
-          </Typography>
+            </Typography>
 
-          {/* Campo de Monto */}
-          <FormControl
+            {/* Campo Monto */}
+            <FormControl
             fullWidth
             sx={{
-              display: "flex",
-              flexDirection: "row", // Alinea en una sola línea
-              alignItems: "center", // Centra verticalmente
-              gap: 1, // Espaciado entre ícono y campo de entrada
-              marginBottom: "10px", // Espaciado inferior
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 1,
+                marginBottom: "10px",
             }}
-          >
-            <Box
-              component="img"
-              src={transferenciaIcon}
-              alt="Monto"
-              sx={{ width: 24, height: 24 }}
-            />
+            >
+            <Box component="img" src={transferenciaIcon} alt="Monto" sx={{ width: 24, height: 24 }} />
             <input
-              type="number"
-              placeholder="Monto"
-              style={{
-                flexGrow: 1, // Hace que el campo ocupe el espacio restante
-                padding: "8px", // Espaciado interno
-                border: "none", // Sin bordes
-                outline: "none", // Sin contorno
-                backgroundColor: "#2c3557", // Fondo personalizado
-                color: "white", // Texto blanco
-                borderRadius: "4px", // Bordes redondeados
-              }}
+                type="number"
+                placeholder="Monto"
+                style={{
+                flexGrow: 1,
+                padding: "8px",
+                border: "none",
+                outline: "none",
+                backgroundColor: "#2c3557",
+                color: "white",
+                borderRadius: "4px",
+                }}
             />
-          </FormControl>
+            </FormControl>
 
-          {/* Select para elegir cuenta desde */}
-          <FormControl
+            {/* Select Desde */}
+            <FormControl
             fullWidth
             sx={{
-              display: "flex",
-              flexDirection: "row", // Alinea en una sola línea
-              alignItems: "center", // Centra verticalmente
-              gap: 1, // Espaciado entre ícono y select
-              marginBottom: "10px", // Espaciado inferior
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 1,
+                marginBottom: "10px",
             }}
-          >
-            <Box
-              component="img"
-              src={billeteraIcon}
-              alt="Desde"
-              sx={{ width: 24, height: 24 }}
-            />
+            >
+            <Box component="img" src={billeteraIcon} alt="Desde" sx={{ width: 24, height: 24 }} />
             <NativeSelect
-              value={selectedAccountDesde}
-              inputProps={{
+                value={selectedAccountDesde}
+                inputProps={{
                 name: "account",
                 id: "account-select",
-              }}
-              sx={{
+                }}
+                sx={{
                 color: "white",
-                bgcolor: "transparent", // Fondo transparente
-                border: "none", // Sin bordes
-                outline: "none", // Sin contorno
-                flexGrow: 1, // Hace que el select ocupe el espacio restante
+                bgcolor: "transparent",
+                border: "none",
+                outline: "none",
+                flexGrow: 1,
                 "& .MuiNativeSelect-icon": { color: "white" },
                 "& option": {
-                  color: "white !important",
-                  backgroundColor: "transparent !important", // Fondo transparente para las opciones
-                  border: "none", // Sin bordes en las opciones
+                    color: "white !important",
+                    backgroundColor: "transparent !important",
+                    border: "none",
                 },
                 "& .MuiNativeSelect-select": {
-                  color: "white !important",
-                  backgroundColor: "#2c3557 !important",
-                }, // Estilo de las opciones nuevas
-                "&:hover": {
-                  backgroundColor: "transparent", // Sin cambio de fondo al hover
+                    color: "white !important",
+                    backgroundColor: "#2c3557 !important",
                 },
-              }}
-              onChange={handleSelectChangeDesde}
+                "&:hover": {
+                    backgroundColor: "transparent",
+                },
+                }}
+                onChange={(e) => setSelectedAccountDesde(e.target.value)}
             >
-              <option value="ahorrito" id="ahorrito">
+                <option value="ahorrito" id="ahorrito">
                 Cuenta de Ahorros
-              </option>
-              <option value="planillin" id="planillin">
+                </option>
+                <option value="planillin" id="planillin">
                 Cuenta de Planilla
-              </option>
+                </option>
             </NativeSelect>
-          </FormControl>
+            </FormControl>
 
-          {/* Select "Hacia" */}
-          <FormControl
+            {/* Select Hacia */}
+            <FormControl
             fullWidth
             sx={{
-              display: "flex",
-              flexDirection: "row", // Alinea en una sola línea
-              alignItems: "center", // Centra verticalmente
-              gap: 1, // Espaciado entre ícono y select
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 1,
+                marginBottom: "10px",
             }}
-          >
-            <Box
-              component="img"
-              src={billeteraIcon}
-              alt="Icono"
-              sx={{ width: 24, height: 24 }}
-            />
+            >
+            <Box component="img" src={billeteraIcon} alt="Hacia" sx={{ width: 24, height: 24 }} />
             <NativeSelect
-              value={selectedAccountHacia}
-              inputProps={{
+                value={selectedAccountHacia}
+                inputProps={{
                 name: "accountto",
                 id: "account-selectto",
-              }}
-              sx={{
+                }}
+                sx={{
                 color: "white",
-                bgcolor: "transparent", // Fondo transparente
-                border: "none", // Sin bordes
-                outline: "none", // Sin contorno
-                flexGrow: 1, // Hace que el select ocupe el espacio restante
+                bgcolor: "transparent",
+                border: "none",
+                outline: "none",
+                flexGrow: 1,
                 "& .MuiNativeSelect-icon": { color: "white" },
                 "& option": {
-                  color: "white !important",
-                  backgroundColor: "transparent !important", // Fondo transparente para las opciones
-                  border: "none", // Sin bordes en las opciones
+                    color: "white !important",
+                    backgroundColor: "transparent !important",
+                    border: "none",
                 },
                 "& .MuiNativeSelect-select": {
-                  color: "white !important",
-                  backgroundColor: "#2c3557 !important",
-                }, // Estilo de las opciones nuevas
-                "&:hover": {
-                  backgroundColor: "transparent", // Sin cambio de fondo al hover
+                    color: "white !important",
+                    backgroundColor: "#2c3557 !important",
                 },
-              }}
-              onChange={handleSelectChangeHacia}
+                "&:hover": {
+                    backgroundColor: "transparent",
+                },
+                }}
+                onChange={(e) => setSelectedAccountHacia(e.target.value)}
             >
-              <option value="ahorrito" id="ahorrito">
+                <option value="ahorrito" id="ahorrito">
                 Cuenta de Ahorros
-              </option>
-              <option value="planillin" id="planillin">
+                </option>
+                <option value="planillin" id="planillin">
                 Cuenta de Planilla
-              </option>
+                </option>
             </NativeSelect>
-          </FormControl>
-        </Box>
-      </Modal>
+            </FormControl>
+
+            {/* Campo Detalle */}
+            <FormControl
+            fullWidth
+            sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 1,
+                marginBottom: "10px",
+            }}
+            >
+            <Box component="img" src={detalleIcon} alt="Detalle" sx={{ width: 24, height: 24 }} />
+            <TextField
+                fullWidth
+                variant="standard"
+                placeholder="Detalle"
+                value={transferDetail}
+                onChange={(e) => setTransferDetail(e.target.value)}
+                InputProps={{
+                disableUnderline: true,
+                style: {
+                    color: "white",
+                    backgroundColor: "#2c3557",
+                    padding: "8px",
+                    borderRadius: "4px",
+                },
+                }}
+            />
+            </FormControl>
+
+            {/* Campo Fecha */}
+            <FormControl
+            fullWidth
+            sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 1,
+                marginBottom: "10px",
+            }}
+            >
+                <Box component="img" src={fechaIcon} alt="Fecha" sx={{ width: 24, height: 24 }} />
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                        label="Fecha"
+                        value={selectedDate}
+                        format="YYYY-MM-DD"
+                        onChange={(newValue) => setSelectedDate(newValue)}
+                        slotProps={{
+                        openPickerButton: {
+                        color: 'white',
+                        },
+                        textField: {
+                            size: "small",
+                            InputProps: {
+                            style: {
+                                color: "white",
+                                backgroundColor: "#2c3557",
+                                borderRadius: "4px",
+                            },
+                            },
+                        },
+                        day: {
+                            sx: {
+                            "&.Mui-selected": {
+                                backgroundColor: "#2c3557 !important", // Fondo del día seleccionado
+                                color: "white", // Texto blanco
+                            },
+                            "&:hover": {
+                                backgroundColor: "lightblue", // Fondo al pasar el mouse
+                            },
+                            },
+                        },
+                        }}
+                    />
+                </LocalizationProvider>
+
+            </FormControl>
+            </Box>
+        </Modal>
 
     </>
   );
