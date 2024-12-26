@@ -159,12 +159,17 @@ function FloatingActions() {
           </Typography>
           {/* Aquí puedes incluir otros elementos específicos para Transferencia */}
           {/* Select para elegir cuenta desde*/}
-          <FormControl fullWidth sx={{ mb: 2, display: "flex", alignItems: "center" }}>
+          <FormControl fullWidth sx={{
+                display: "flex",
+                flexDirection: "row", // Alinea en una sola línea
+                alignItems: "center", // Centra verticalmente
+                gap: 1, // Espaciado entre ícono y select
+            }}>
         <Box
           component="img"
           src={billeteraIcon}
           alt="Desde"
-          sx={{ width: 24, height: 24, marginRight: 1 }}
+          sx={{ width: 24, height: 24}}
         />
         <NativeSelect
           value={selectedAccountDesde}
@@ -177,6 +182,7 @@ function FloatingActions() {
             bgcolor: "transparent", // Fondo transparente
             border: "none", // Sin bordes
             outline: "none", // Sin contorno
+            flexGrow: 1, // Hace que el select ocupe el espacio restante
             "& .MuiNativeSelect-icon": { color: "white" },
             "& option": {
               color: "white !important",
@@ -200,45 +206,57 @@ function FloatingActions() {
       </FormControl>
 
       {/* Select "Hacia" */}
-      <FormControl fullWidth sx={{ display: "flex", alignItems: "center" }}>
-        <Box
-          component="img"
-          src={billeteraIcon}
-          alt="Hacia"
-          sx={{ width: 24, height: 24, marginRight: 1 }}
-        />
-        <NativeSelect
-          value={selectedAccountHacia}
-          inputProps={{
-            name: "accountto",
-            id: "account-selectto",
-          }}
-          sx={{
-            color: "white",
-            bgcolor: "transparent", // Fondo transparente
-            border: "none", // Sin bordes
-            outline: "none", // Sin contorno
-            "& .MuiNativeSelect-icon": { color: "white" },
-            "& option": {
-              color: "white !important",
-              backgroundColor: "transparent !important", // Fondo transparente para las opciones
-              border: "none", // Sin bordes en las opciones
-            },
-            "& .MuiNativeSelect-select": { color: "white !important", backgroundColor: "#2c3557 !important" }, // Estilo de las opciones nuevas
-            "&:hover": {
-              backgroundColor: "transparent", // Sin cambio de fondo al hover
-            },
-          }}
-          onChange={handleSelectChangeHacia}
-        >
-          <option value="ahorrito" id="ahorrito">
-            Cuenta de Ahorros
-          </option>
-          <option value="planillin" id="planillin">
-            Cuenta de Planilla
-          </option>
-        </NativeSelect>
-      </FormControl>
+      <FormControl
+  fullWidth
+  sx={{
+    display: "flex",
+    flexDirection: "row", // Alinea en una sola línea
+    alignItems: "center", // Centra verticalmente
+    gap: 1, // Espaciado entre ícono y select
+  }}
+>
+  {/* Ícono a la izquierda */}
+  <Box
+    component="img"
+    src={billeteraIcon}
+    alt="Icono"
+    sx={{ width: 24, height: 24 }}
+  />
+  {/* Select a la derecha */}
+  <NativeSelect
+    value={selectedAccountHacia}
+    inputProps={{
+      name: "accountto",
+      id: "account-selectto",
+    }}
+    sx={{
+      color: "white",
+      bgcolor: "transparent", // Fondo transparente
+      border: "none", // Sin bordes
+      outline: "none", // Sin contorno
+      flexGrow: 1, // Hace que el select ocupe el espacio restante
+      "& .MuiNativeSelect-icon": { color: "white" },
+      "& option": {
+        color: "white !important",
+        backgroundColor: "transparent !important", // Fondo transparente para las opciones
+        border: "none", // Sin bordes en las opciones
+      },
+      "& .MuiNativeSelect-select": { color: "white !important", backgroundColor: "#2c3557 !important" }, // Estilo de las opciones nuevas
+      "&:hover": {
+        backgroundColor: "transparent", // Sin cambio de fondo al hover
+      },
+    }}
+    onChange={handleSelectChangeHacia}
+  >
+    <option value="ahorrito" id="ahorrito">
+      Cuenta de Ahorros
+    </option>
+    <option value="planillin" id="planillin">
+      Cuenta de Planilla
+    </option>
+  </NativeSelect>
+</FormControl>
+
 
         </Box>
       </Modal>
